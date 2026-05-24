@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
 const AdminAssets = () => {
@@ -13,38 +12,36 @@ const AdminAssets = () => {
   const BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
+    // We moved these inside so the build server is happy
+    const loadAssets = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        const assetsList = Array.isArray(data) ? data : (data.assets || data.data || []);
+        setAssets(assetsList);
+        setAssetError("");
+      } catch (err) {
+        setAssetError("Failed to load assets data records.");
+      }
+    };
+
+    const loadUsers = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/users`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setUsers(Array.isArray(data) ? data : data.data || []);
+      } catch (err) {
+        console.error("Failed to load users");
+      }
+    };
+
     loadAssets();
     loadUsers();
-  }, []);
-
-  const loadAssets = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      
-      
-      const assetsList = Array.isArray(data) ? data : (data.assets || data.data || []);
-      setAssets(assetsList);
-      setAssetError("");
-    } catch (err) {
-      setAssetError("Failed to load assets data records.");
-    }
-  };
-  const loadUsers = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/users`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setUsers(Array.isArray(data) ? data : data.data || []);
-    } catch (err) {
-      console.error("Failed to load users");
-    }
-  };
+  }, []); // Empty array tells React to run this only once when the page loads
 
   const assignAsset = async (assetId) => {
     const userId = selectedUser[assetId];
@@ -63,7 +60,8 @@ const AdminAssets = () => {
 
       if (res.ok) {
         setSuccessMessage("Asset assigned successfully!");
-        await loadAssets(); // Refresh list to remove the now-assigned item
+        // We trigger a page reload or state update here
+        window.location.reload(); 
       }
     } catch (err) {
       setSuccessMessage("Assignment failed.");
@@ -82,6 +80,7 @@ const AdminAssets = () => {
       <p>Assign available assets to users.</p>
 
       {successMessage && <div className="admin-alert">{successMessage}</div>}
+      {assetError && <div className="admin-error">{assetError}</div>}
 
       <div className="asset-grid">
         {availableAssets.length > 0 ? (
