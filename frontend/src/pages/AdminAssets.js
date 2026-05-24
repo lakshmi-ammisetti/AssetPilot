@@ -41,8 +41,7 @@ const AdminAssets = () => {
 
     loadAssets();
     loadUsers();
-  }, []); // Empty array tells React to run this only once when the page loads
-
+  }, [token]); // 
   const assignAsset = async (assetId) => {
     const userId = selectedUser[assetId];
     if (!userId) return;
