@@ -4,10 +4,9 @@ require('dotenv').config();
 
 require('./database/database');
 const app = express();
-app.get('/test', (req, res) => {
-  res.status(200).send('Backend is definitely working!');
-});
-app.use(cors({origin: '*'}));
+app.use(cors({
+  origin: 'https://asset-pilot-djeen7de0-lakshmis-projects-b03feb55.vercel.app'
+}));
 app.use(express.json());
 
 app.use('/api/auth', require('./routes/authRoutes'));
