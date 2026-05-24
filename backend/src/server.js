@@ -4,7 +4,9 @@ require('dotenv').config();
 
 require('./database/database');
 const app = express();
-
+app.get('/test', (req, res) => {
+  res.status(200).send('Backend is definitely working!');
+});
 app.use(cors({origin: '*'}));
 app.use(express.json());
 
