@@ -34,7 +34,7 @@ export default function Assets() {
   const handleFilter = async () => {
     setPage(1); // Schedule state update for rendering
     setLoading(true);
-    await fetchAssets(1); // 🌟 CRITICAL: Force page 1 into the query string immediately
+    await fetchAssets(1); 
   };
 
   if (loading) return <Loader />;
