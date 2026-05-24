@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 const AdminAssets = () => {
   const [assets, setAssets] = useState([]);
@@ -8,15 +8,15 @@ const AdminAssets = () => {
   const [assetError, setAssetError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   
-  
-  const tokenRef = useRef(localStorage.getItem("token"));
   const BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
+    // 1. We fetch the token INSIDE the functions. 
+    // This way, useEffect has NO external dependencies to track.
     
     const loadAssets = async () => {
+      const token = localStorage.getItem("token"); // Scoped locally
       try {
-        const token = localStorage.getItem("token"); // Get it fresh inside the effect
         const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -30,8 +30,8 @@ const AdminAssets = () => {
     };
 
     const loadUsers = async () => {
+      const token = localStorage.getItem("token"); // Scoped locally
       try {
-        const token = localStorage.getItem("token"); // Get it fresh inside the effect
         const res = await fetch(`${BASE_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -44,11 +44,10 @@ const AdminAssets = () => {
 
     loadAssets();
     loadUsers();
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // <--- Now this is strictly empty. No warnings possible.
 
   const assignAsset = async (assetId) => {
+    const token = localStorage.getItem("token");
     const userId = selectedUser[assetId];
     if (!userId) return;
 
@@ -65,7 +64,6 @@ const AdminAssets = () => {
 
       if (res.ok) {
         setSuccessMessage("Asset assigned successfully!");
-        // We trigger a page reload or state update here
         window.location.reload(); 
       }
     } catch (err) {
@@ -83,22 +81,18 @@ const AdminAssets = () => {
     <div className="admin-asset-page">
       <h2>Admin Asset Management</h2>
       <p>Assign available assets to users.</p>
-
       {successMessage && <div className="admin-alert">{successMessage}</div>}
       {assetError && <div className="admin-error">{assetError}</div>}
-
       <div className="asset-grid">
         {availableAssets.length > 0 ? (
           availableAssets.map((asset) => (
             <div key={asset.id} className="asset-card">
               <h4>{asset.name}</h4>
               <p>ID: {asset.id} | Tag: {asset.asset_tag}</p>
-              
               <select onChange={(e) => setSelectedUser({...selectedUser, [asset.id]: e.target.value})}>
                 <option value="">Select User</option>
                 {users.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
               </select>
-              
               <button onClick={() => assignAsset(asset.id)} disabled={loadingId === asset.id}>
                 {loadingId === asset.id ? "Assigning..." : "Assign"}
               </button>
