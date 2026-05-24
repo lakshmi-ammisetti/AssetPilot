@@ -5,7 +5,7 @@ require('dotenv').config();
 require('./database/database');
 const app = express();
 
-app.use(cors({origin: 'https://asset-pilot-three.vercel.app'}));
+app.use(cors({origin: '*'}));
 app.use(express.json());
 
 app.use('/api/auth', require('./routes/authRoutes'));
