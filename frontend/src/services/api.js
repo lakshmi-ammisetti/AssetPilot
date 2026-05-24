@@ -1,4 +1,4 @@
-const BASE_URL = 'https://assetpilot.onrender.com/';
+const BASE_URL = 'https://assetpilot.onrender.com';
 
 async function request(url, options = {}) {
   const token = localStorage.getItem('token');
