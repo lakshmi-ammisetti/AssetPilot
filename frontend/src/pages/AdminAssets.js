@@ -8,15 +8,15 @@ const AdminAssets = () => {
   const [assetError, setAssetError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   
-  // Use a ref to store the token stably so it doesn't trigger dependency warnings
+  
   const tokenRef = useRef(localStorage.getItem("token"));
   const BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
-    const token = tokenRef.current; // Access the stable token
-
+    
     const loadAssets = async () => {
       try {
+        const token = localStorage.getItem("token"); // Get it fresh inside the effect
         const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -31,6 +31,7 @@ const AdminAssets = () => {
 
     const loadUsers = async () => {
       try {
+        const token = localStorage.getItem("token"); // Get it fresh inside the effect
         const res = await fetch(`${BASE_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -43,9 +44,10 @@ const AdminAssets = () => {
 
     loadAssets();
     loadUsers();
-  }, []); // Now the array is empty and perfectly safe!
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // ... (rest of your component stays exactly the same)
   const assignAsset = async (assetId) => {
     const userId = selectedUser[assetId];
     if (!userId) return;
