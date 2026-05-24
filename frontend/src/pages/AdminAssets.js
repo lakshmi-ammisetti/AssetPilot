@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const AdminAssets = () => {
   const [assets, setAssets] = useState([]);
@@ -8,11 +8,13 @@ const AdminAssets = () => {
   const [assetError, setAssetError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   
-  const token = localStorage.getItem("token");
+  // Use a ref to store the token stably so it doesn't trigger dependency warnings
+  const tokenRef = useRef(localStorage.getItem("token"));
   const BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
-    // We moved these inside so the build server is happy
+    const token = tokenRef.current; // Access the stable token
+
     const loadAssets = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
@@ -41,7 +43,9 @@ const AdminAssets = () => {
 
     loadAssets();
     loadUsers();
-  }, [token]); // 
+  }, []); // Now the array is empty and perfectly safe!
+
+  // ... (rest of your component stays exactly the same)
   const assignAsset = async (assetId) => {
     const userId = selectedUser[assetId];
     if (!userId) return;
