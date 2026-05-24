@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
 const AdminAssets = () => {
@@ -5,7 +6,7 @@ const AdminAssets = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
   const [loadingId, setLoadingId] = useState(null);
-  const [, setAssetError] = useState("");
+  const [assetError, setAssetError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   
   const token = localStorage.getItem("token");
