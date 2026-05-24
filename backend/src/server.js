@@ -6,7 +6,7 @@ require('./database/database');
 const app = express();
 
 app.use(cors({
-  origin: 'https://asset-pilot-three.vercel.app/login'
+  origin: 'https://asset-pilot-three.vercel.app'
 }));
 app.use(express.json());
 
