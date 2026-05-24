@@ -5,7 +5,7 @@ const AdminAssets = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
   const [loadingId, setLoadingId] = useState(null);
-  const [assetError, setAssetError] = useState("");
+  const [, setAssetError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   
   const token = localStorage.getItem("token");
@@ -18,7 +18,6 @@ const AdminAssets = () => {
 
   const loadAssets = async () => {
     try {
-      // If your API supports a 'limit' parameter, set it high to get all assets at once
       const res = await fetch(`${BASE_URL}/api/assets?limit=100`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -26,7 +25,7 @@ const AdminAssets = () => {
       });
       const data = await res.json();
       
-      // Ensure we are setting the full array of assets regardless of how the API returns them
+      
       const assetsList = Array.isArray(data) ? data : (data.assets || data.data || []);
       setAssets(assetsList);
       setAssetError("");
